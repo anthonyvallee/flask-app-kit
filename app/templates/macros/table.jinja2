@@ -1,0 +1,120 @@
+{% import "macros/utils.jinja2" as utils %}
+
+
+{# Renders a responsive Bootstrap table.
+
+  Args:
+    attr(dict, optional): The HTML attributes applied to the table tag.
+    css_class (str, optional): Space delimited CSS classes to append to the
+      table tag.
+
+  Example:
+    {% call table(attr={"id": "table-id"}) %}
+      {% call table_headers() %}...{% endcall %}
+      {% call table_body() %}
+        ...
+      {% endcall %}
+    {% endcall %}
+
+#}
+{% macro table(attr={}) %}
+  <div class="table-responsive">
+    <table {{ utils.attributes(attr, css_class="table") }}>
+      {{ caller() }}
+    </table>
+  </div>
+{% endmacro %}
+
+
+{# Renders the HTML table headers.
+
+  Args:
+    *args (str or tuple, optional): Variable length argument list. Must be composed of strings or
+      tuples (of string and tuple of two ints).
+
+      Tuple typed arguments must have a string as its first index element, and a
+      tuple of two integers representing the column size for the header (md, xs).
+
+  Examples:
+    Using `table_headers` with no arguments.
+    {% call table_headers() %}
+      <th>First name</th>
+      <th>Last name</th>
+    {% endcall %}
+
+    Using `table_headers` with strings.
+    {% call table_headers("First name", "Last name") %}{% endcall %}
+
+    Using `table_headers` with tuple arguments.
+    {% call table_headers(("First name", (6, 6)), (("Last name"), (6, 6))) %}{% endcall %}
+
+#}
+{% macro table_headers() %}
+  <thead>
+    <tr>
+      {% if varargs|length == 0 %}
+        {{ caller() }}
+      {% else %}
+        {% for header in varargs %}
+          {% if header is string %}
+            <th>{{ header }}</th>
+          {% elif header is sequence and header|length == 2 %}
+            {% set header_text, colwidth = header %}
+            {% set md, xs = colwidth %}
+            <th class="col-md-{{ md }} col-xs-{{ xs }}">{{ header_text }}</th>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tr>
+  </thead>
+{% endmacro %}
+
+
+{# Renders an HTML table body. #}
+{% macro table_rows() %}
+  <tbody>
+    {{ caller() }}
+  </tbody>
+{% endmacro %}
+
+
+{# Renders an horizontal row.
+
+  Note:
+    It renders the row horizontally instead of vertically, like the following:
+    --------------------------
+    | Header |   `caller`    |
+    --------------------------
+
+  Args:
+    header (str): The header column text.
+
+#}
+{% macro table_hrow(header, attr={}) %}
+  <tr>
+    <th {{ utils.attributes(attr, css_class="text-nowrap") }}>{{ header }}</th>
+    {{ caller() }}
+  </tr>
+{% endmacro %}
+
+
+{# Renders an horizontal row. The data defaults to `failure_text` if `attr`
+    value is falsy or None.
+
+  Args:
+    data (obj): The attribute that is conditionally displayed in the row (if truthy).
+    header (str): The header text.
+    classes (dict, optional): The CSS classes applied to the <th>(`header` key) and <td>(`data` key) elements.
+    failure_text (str, optional): The text displayed in the row, in case `attr`
+      is falsy or None.
+
+#}
+{% set default_failure_text = _("Unknown") %}
+{% macro conditional_hrow(data, header, columns=None, failure_text=default_failure_text) %}
+  {% if columns is none %}
+    {% set columns =  {"header": "col-md-3 col-xs-6", "data": "col-md-9 col-xs-6"} %}
+  {% endif %}
+  {% call table_hrow(header, {"class": columns.header}) %}
+    <td class="{{ columns.data }}">{{ data|default(failure_text, true) }}</td>
+  {% endcall %}
+{% endmacro %}

@@ -1,0 +1,52 @@
+{# Renders a Bootstrap grid row.
+
+  Args:
+    css_class (str, optional): Space delimited CSS classes appended to the column div.
+
+#}
+{% macro row(css_class="") %}
+  <div class="{{ "row {}".format(css_class) if css_class else "row" }}">
+    {{ caller() }}
+  </div>
+{% endmacro %}
+
+
+{# Renders a Bootstrap grid column.
+
+  Args:
+    md (int): The column width for desktop-sized viewports.
+    xs (int): The column width for mobile-sized viewports.
+    css_class (str, optional): Space delimited CSS classes appended to the column div.
+    **kwargs: Additionnal integer typed keyword-arguments "lg" and/or "sm" can be
+      provided for adding `col-lg-` or `col-sm-` column classes.
+
+  Example:
+    {% call col(6, 12) %}
+      ...
+    {% endcall %}
+
+    Will render:
+    <div class="col-md-6 col-xs-12">
+      ...
+    </div>
+
+    Using `col` with "sm"/"lg":
+    {% call col(6, 12, sm=12) %}
+      ...
+    {% endcall %}
+
+    Will render:
+    <div class="col-md-6 col-xs-12 col-sm-12">
+      ...
+    </div>
+
+#}
+{% macro col(md, xs, css_class="") %}
+  {% set classes = ["col-md-{}".format(md), "col-xs-{}".format(xs)] %}
+  {% if kwargs.lg %}{% set classes = ["col-lg-{}".format(kwargs.lg)] + classes %}{% endif %}
+  {% if kwargs.sm %}{% set classes = classes + ["col-sm-{}".format(kwargs.sm)] %}{% endif %}
+  {% set classes = classes + css_class.split() %}
+  <div class="{{ " ".join(classes) }}">
+    {{ caller() }}
+  </div>
+{% endmacro %}

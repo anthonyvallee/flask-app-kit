@@ -1,0 +1,48 @@
+{% import "macros/flash.jinja2" as flash with context %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="description" contents="{{ description or _("No description available for this page.") }}"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{- config.APP_NAME + " · " + title|e if title else config.APP_NAME -}}</title>
+        {# Stylesheets #}
+        {% block prevendor_css %}{% endblock %}
+        {% include "styles/bootstrap.jinja2" %}
+        {% include "styles/fontawesome.jinja2" %}
+        {% block postvendor_css %}{% endblock %}
+        {% include "styles/<%= appName %>.jinja2" %}
+    </head>
+    <body>
+      <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="{{ url_for("page.home") }}">
+              {{- config.APP_NAME -}}
+            </a>
+          </div>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="{{ url_for("page.home") }}">{{ _("Home") }}</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <main class="{% block container_type %}{% endblock %}">
+        {{ flash.render() }}
+        {% block heading %}{% endblock %}
+        {% block body %}{% endblock %}
+      </main>
+      <footer class="footer text-center">
+        <div class="container">
+          <p class="footer-margin">{{ config.APP_NAME }} &copy; {{ get_year() }}</p>
+        </div>
+      </footer>
+      {# Scripts #}
+      {% block prevendor_scripts %}{% endblock %}
+      {% include "scripts/jquery.jinja2" %}
+      {% include "scripts/bootstrap.jinja2" %}
+      {% block postvendor_scripts %}{% endblock %}
+    </body>
+</html>

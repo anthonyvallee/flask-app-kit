@@ -1,0 +1,4 @@
+DEBUG = False
+
+SERVER_NAME = 'example.com'
+SECRET_KEY = 'generateastrong128chartoken'

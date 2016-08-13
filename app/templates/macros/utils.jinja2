@@ -1,0 +1,41 @@
+{# The CSS class name used for activating macros/scripts' `momentjs_from_now`. #}
+{% set timed = "__timed" %}
+
+
+{# Renders inline HTML tag attributes.
+
+  Args:
+    attr (dict): The attributes with their value.
+    css_class (str, optional): Space delimited CSS classes. Will be prepended to
+      the attr `class` key-value.
+
+  Example:
+    <div {{ attributes({"id": "my-panel", "class": "panel-default"}, css_class="panel") }}></div>
+
+    Will result in:
+    <div id="my-panel" class="panel panel-default"></div>
+
+#}
+{% macro attributes(attr={}, css_class="") -%}
+  {% set _class = css_class + " " + attr.class if attr.class else css_class %}
+  {% do attr.update({"class": _class}) %}
+  {%- for attribute, attribute_value in attr.iteritems() -%}
+    {{- attribute -}}="{{- attribute_value -}}"
+  {%- endfor -%}
+{% endmacro %}
+
+
+{# HTML data attribute for sorting column cells from datetime objects.
+
+  Note:
+    The table must be sorted using tablesort.js for this attribute
+    to have any effect.
+
+  Args:
+    datetime (datetime object): The datetime object used for sorting.
+
+#}
+{% macro date_sort(datetime) -%}
+  data-sort="{{ datetime|to_unix_timestamp|int }}"
+{%- endmacro %}
+

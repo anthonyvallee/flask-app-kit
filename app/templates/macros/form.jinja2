@@ -1,0 +1,62 @@
+{# Render a form field's label with visual aid to see if it's required. #}
+{%- macro field_label(field) -%}
+    <label for="{{ field.id }}">
+        {{- field.label.text }}{{ '*' if field.flags.required else '' -}}
+    </label>
+{%- endmacro -%}
+
+{# Render a form field's errors. #}
+{%- macro field_errors(f) -%}
+    {% if f.errors %}
+        <ul class="list-unstyled text-danger field-error">
+            {% for error in f.errors %}
+                <li>{{ error | e }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{%- endmacro -%}
+
+{# Render a form field. #}
+{%- macro field(f, field_class) -%}
+    {% set field_class = 'form-control ' + field_class %}
+    {{ f(class_=field_class, **kwargs) }}
+{%- endmacro -%}
+
+{# Render a checkbox field. #}
+{%- macro checkbox_field(f, field_class) -%}
+    {{ f(type='checkbox', class_=field_class, **kwargs) }} {{ f.label }}
+{%- endmacro -%}
+
+{# Render a file upload field. #}
+{%- macro fileupload_field(f, field_class) -%}
+    {{ f(type='file', class_=field_class, **kwargs) }} {{ f.label }}
+{%- endmacro -%}
+
+{# Render a Bootstrap 3 form group with errors for various field types. #}
+{%- macro form_group(f, css_class='', field_class='') -%}
+    {% if f.errors %}
+        {% set css_class = css_class + ' has-error ' + kwargs.pop('class', '') %}
+    {% endif %}
+    {% if f.type == 'BooleanField' %}
+        <div class="checkbox {{ css_class }}">
+            {{ checkbox_field(f, field_class, **kwargs) }}
+    {% else %}
+        <div class="form-group {{ css_class }}">
+            {{ field_label(f) }}
+            {{ field(f, field_class, **kwargs) }}
+    {% endif %}
+            {{ field_errors(f) }}
+            {{ caller () }}
+        </div>
+{%- endmacro %}
+
+{# Render a form tag that contains a CSRF token and all hidden fields, it also
+   properly supports all HTTP version, simply pass in method='delete', etc.. #}
+{%- macro form_tag(form, endpoint, fid='', class='', method='post', enctype='application/x-www-form-urlencoded') -%}
+    {% set method = method | lower %}
+    <form id="{{ fid }}" action="{{ url_for(endpoint, **kwargs) }}"
+          method="{{ method }}" enctype="{{ enctype }}" class="{{ class }}" role="form">
+          {{ form.hidden_tag() }}
+          {{ caller () }}
+    </form>
+{%- endmacro -%}

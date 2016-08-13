@@ -1,0 +1,6 @@
+# Flask
+flask
+Flask-Script
+
+# Flask extensions
+flask_babel

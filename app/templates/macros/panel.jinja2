@@ -1,0 +1,47 @@
+{# Renders a Bootstrap panel with a title.
+
+  Note:
+    `caller` content is appended inside the panel body (using nested caller bugfix).
+
+  Args:
+    title (str, optional): The panel title.
+
+#}
+{% macro panel(title=None) -%}
+    {% set content = caller() %}
+    {{ panel_title(title) }}
+    {% call panel_body() %}{{ content }}{% endcall %}
+{%- endmacro %}
+
+
+{# Renders a panel title.
+
+  Note:
+    This will render a non-breaking space if no title is provided.
+
+  Args:
+    title (str, optional): The panel title.
+
+#}
+{% macro panel_title(title=None) %}
+  {% if title %}
+    <h4>{{ title }}</h4>
+  {% else %}
+    <h4>&nbsp;</h4>
+  {% endif %}
+{% endmacro %}
+
+
+{# Renders a Bootstrap panel.
+
+  Note:
+    `caller` content is appended inside the panel body.
+
+#}
+{% macro panel_body() %}
+  <div class="panel panel-default">
+    <div class="panel-body">
+        {{ caller() }}
+    </div>
+  </div>
+{% endmacro %}
