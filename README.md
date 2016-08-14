@@ -1,1 +1,1 @@
-# flask-app-kit
+# Flask Essentials Kit
