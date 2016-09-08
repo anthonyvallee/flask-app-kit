@@ -82,7 +82,6 @@ def logging_handler(app):
         # Attempts to verify if request is behind a proxy.
         # Source: https://github.com/mattupstate/flask-security/blob/4049c0620383f42d37950c7a35af5ddd6df0540f/flask_security/utils.py#L65
         if 'X-Forwarded-For' in request.headers:
-            print request.headers.getlist('X-Forwarded-For')
             remote_addr = request.headers.getlist('X-Forwarded-For')[0].split(',')[0]
         else:
             remote_addr = request.remote_addr or 'untrackable'
