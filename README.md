@@ -12,4 +12,4 @@ pip install -r requirements.txt
 pip install --editable .
 ```
 
-To start the server, proceed with : `python manage.py start`.
+To start the server, proceed with : `python manage.py server`.

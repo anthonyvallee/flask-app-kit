@@ -1,7 +1,7 @@
 from flask_script import Manager, Server
 from flask_script.commands import ShowUrls, Clean
 
-from <%= appName %>.app import create_app
+from app.core import create_app
 
 app = create_app()
 
