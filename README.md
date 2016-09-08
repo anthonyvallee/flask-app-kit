@@ -1,4 +1,4 @@
-# Flask App Kit
+# Flask Essentials Kit
 
 This is the application template for (generator-flask-app)[]
 This is a **Yeoman generator** for a basic Flask application.
