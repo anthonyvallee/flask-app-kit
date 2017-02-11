@@ -1,6 +1,6 @@
 # Flask Essentials Kit
 
-This is the application template for (generator-flask-app)[]
+This is the application template for (generator-flask-app)[https://github.com/anthonyvallee/generator-flask-essentials-kit].
 This is a **Yeoman generator** for a basic Flask application.
 It is heavily inspired by Nick Janetakis's [build-a-saas-app-with-flask](https://github.com/nickjj/build-a-saas-app-with-flask) project structure.
 
